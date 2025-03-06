@@ -1,0 +1,24 @@
+{
+    "login": {
+        "title":"Boviet Solar",
+        "button": {
+            "login": "Đăng nhập",
+            "logging_in": "Đang đăng nhập...",
+            "register": "Đăng ký",
+            "logout": "Đăng xuất"
+        },
+        "input": {
+            "placeholder": {
+                "username": "Tài khoản",
+                "password": "Mật khẩu",
+                "rememberMe": "Lưu đăng nhập"
+            },
+            "label":{
+
+            }
+        },
+        "checkbox": {
+            "rememberMe": "Lưu đăng nhập"
+        }
+    }
+}
