@@ -1,0 +1,40 @@
+-- 菜单 SQL
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('${functionName}', '${parentMenuId}', '1', '${businessName}', '${moduleName}/${businessName}/index', 1, 0, 'C', '0', '0', '${permissionPrefix}:list', '#', 'admin', sysdate(), '', null, '${functionName}菜单');
+
+-- 按钮父菜单ID
+SELECT @parentId := LAST_INSERT_ID();
+
+-- 按钮 SQL
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('${functionName}查询', @parentId, '1',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:query',        '#', 'admin', sysdate(), '', null, '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('${functionName}新增', @parentId, '2',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:add',          '#', 'admin', sysdate(), '', null, '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('${functionName}修改', @parentId, '3',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:edit',         '#', 'admin', sysdate(), '', null, '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('${functionName}删除', @parentId, '4',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:remove',       '#', 'admin', sysdate(), '', null, '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('${functionName}导出', @parentId, '5',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:export',       '#', 'admin', sysdate(), '', null, '');
+
+-- Create label language
+#foreach ($column in $columns)
+    #if($column.columnComment)
+        insert into sys_language (lang_key, lang_type, lang_zh, lang_en, lang_vi, create_by, create_time, update_by, update_time, remark) values ('lbl.${businessName}.${column.javaField}', 'Page', '${column.columnComment}', '${column.javaField}','${column.columnComment}', 'admin', sysdate(),null,null,null);
+    #else
+        insert into sys_language (lang_key, lang_type, lang_zh, lang_en, lang_vi, create_by, create_time, update_by, update_time, remark) values ('lbl.${businessName}.${column.javaField}', 'Page', '${column.javaField}', '${column.javaField}','${column.javaField}', 'admin', sysdate(),null,null,null);
+    #end
+#end
+
+-- Create placeholder language
+#foreach ($column in $columns)
+    #if($column.columnComment)
+        insert into sys_language (lang_key, lang_type, lang_zh, lang_en, lang_vi, create_by, create_time, update_by, update_time, remark) values ('plh.${businessName}.${column.javaField}', 'Page', '请输入${column.columnComment}', 'Please input ${column.javaField}','Vui lòng nhập vào ${column.columnComment}', 'admin', sysdate(),null,null,null);
+    #else
+        insert into sys_language (lang_key, lang_type, lang_zh, lang_en, lang_vi, create_by, create_time, update_by, update_time, remark) values ('plh.${businessName}.${column.javaField}', 'Page', '请输入${column.javaField}', 'Please input ${column.javaField}','Vui lòng nhập vào ${column.javaField}', 'admin', sysdate(),null,null,null);
+    #end
+#end

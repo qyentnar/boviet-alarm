@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boviet.alarm.mapper.AlarmActionMapper">
+    
+    <resultMap type="AlarmAction" id="AlarmActionResult">
+        <result property="id"                  column="id"/>
+        <result property="actionId"                  column="action_id"/>
+        <result property="actionType"                  column="action_type"/>
+        <result property="actionName"                  column="action_name"/>
+        <result property="config"                  column="config"/>
+        <result property="template"                  column="template"/>
+        <result property="createBy"                  column="create_by"/>
+        <result property="createTime"                  column="create_time"/>
+        <result property="updateBy"                  column="update_by"/>
+        <result property="updateTime"                  column="update_time"/>
+        <result property="remark"                  column="remark"/>
+    </resultMap>
+
+    <sql id="selectAlarmActionVo">
+        select id, action_id, action_type, action_name, config, template, create_by, create_time, update_by, update_time, remark from alarm_action
+    </sql>
+
+    <select id="selectAlarmActionList" parameterType="AlarmAction" resultMap="AlarmActionResult">
+        <include refid="selectAlarmActionVo"/>
+        <where>  
+            <if test="actionId != null  and actionId != ''"> and action_id = #{actionId}</if>
+            <if test="actionType != null  and actionType != ''"> and action_type = #{actionType}</if>
+            <if test="actionName != null  and actionName != ''"> and action_name like concat('%', #{actionName}, '%')</if>
+            <if test="config != null  and config != ''"> and config = #{config}</if>
+        </where>
+    </select>
+    
+    <select id="selectAlarmActionById" parameterType="Long" resultMap="AlarmActionResult">
+        <include refid="selectAlarmActionVo"/>
+        where id = #{id}
+    </select>
+        
+    <select id="selectAlarmActionByActionId" parameterType="String" resultMap="AlarmActionResult">
+        <include refid="selectAlarmActionVo"/>
+        where action_id = #{actionId}
+    </select>
+
+    <insert id="insertAlarmAction" parameterType="AlarmAction" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_action
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="actionId != null">action_id,</if>
+            <if test="actionType != null">action_type,</if>
+            <if test="actionName != null">action_name,</if>
+            <if test="config != null">config,</if>
+            <if test="template != null">template,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="actionId != null">#{actionId},</if>
+            <if test="actionType != null">#{actionType},</if>
+            <if test="actionName != null">#{actionName},</if>
+            <if test="config != null">#{config},</if>
+            <if test="template != null">#{template},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAlarmAction" parameterType="AlarmAction">
+        update alarm_action
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="actionId != null">action_id = #{actionId},</if>
+            <if test="actionType != null">action_type = #{actionType},</if>
+            <if test="actionName != null">action_name = #{actionName},</if>
+            <if test="config != null">config = #{config},</if>
+            <if test="template != null">template = #{template},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAlarmActionById" parameterType="Long">
+        delete from alarm_action where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmActionByIds" parameterType="String">
+        delete from alarm_action where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

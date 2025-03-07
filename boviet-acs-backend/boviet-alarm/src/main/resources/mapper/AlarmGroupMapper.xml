@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boviet.alarm.mapper.AlarmGroupMapper">
+    
+    <resultMap type="AlarmGroup" id="AlarmGroupResult">
+        <result property="id"                  column="id"/>
+        <result property="groupId"                  column="group_id"/>
+        <result property="groupName"                  column="group_name"/>
+        <result property="node1"                  column="node1"/>
+        <result property="node2"                  column="node2"/>
+        <result property="node3"                  column="node3"/>
+        <result property="node4"                  column="node4"/>
+        <result property="node5"                  column="node5"/>
+        <result property="node6"                  column="node6"/>
+        <result property="node7"                  column="node7"/>
+        <result property="node8"                  column="node8"/>
+        <result property="node9"                  column="node9"/>
+        <result property="createBy"                  column="create_by"/>
+        <result property="createTime"                  column="create_time"/>
+        <result property="updateBy"                  column="update_by"/>
+        <result property="updateTime"                  column="update_time"/>
+        <result property="remark"                  column="remark"/>
+        <collection property="actions"  javaType="java.util.List" resultMap="AlarmActionResult"/>
+    </resultMap>
+
+    <resultMap type="AlarmAction" id="AlarmActionResult">
+        <result property="actionId"            column="action_id"/>
+        <result property="actionType"          column="action_type"/>
+        <result property="actionName"          column="action_name"/>
+        <result property="config"              column="config"/>
+    </resultMap>
+
+    <sql id="selectAlarmGroupVo">
+        SELECT
+            a.id,
+            a.group_id,
+            a.group_name,
+            a.node1,
+            a.node2,
+            a.node3,
+            a.node4,
+            a.node5,
+            a.node6,
+            a.node7,
+            a.node8,
+            a.node9,
+            a.create_by,
+            a.create_time,
+            a.update_by,
+            a.update_time,
+            a.remark,
+            c.action_id,
+            c.action_type,
+            c.action_name,
+            c.config
+        FROM
+            alarm_group a
+        LEFT JOIN alarm_group_action b on a.group_id = b.group_id
+        LEFT JOIN alarm_action c on b.action_id = c.action_id
+    </sql>
+
+    <select id="selectAlarmGroupList" parameterType="AlarmGroup" resultMap="AlarmGroupResult">
+        <include refid="selectAlarmGroupVo"/>
+        <where>  
+            <if test="groupId != null  and groupId != ''"> and a.group_id = #{groupId}</if>
+            <if test="groupName != null  and groupName != ''"> and a.group_name like concat('%', #{groupName}, '%')</if>
+            <if test="node1 != null  and node1 != ''"> and a.node1 = #{node1}</if>
+            <if test="node2 != null  and node2 != ''"> and a.node2 = #{node2}</if>
+            <if test="node3 != null  and node3 != ''"> and a.node3 = #{node3}</if>
+            <if test="node4 != null  and node4 != ''"> and a.node4 = #{node4}</if>
+            <if test="node5 != null  and node5 != ''"> and a.node5 = #{node5}</if>
+            <if test="node6 != null  and node6 != ''"> and a.node6 = #{node6}</if>
+            <if test="node7 != null  and node7 != ''"> and a.node7 = #{node7}</if>
+            <if test="node8 != null  and node8 != ''"> and a.node8 = #{node8}</if>
+            <if test="node9 != null  and node9 != ''"> and a.node9 = #{node9}</if>
+        </where>
+    </select>
+    
+    <select id="selectAlarmGroupById" parameterType="Long" resultMap="AlarmGroupResult">
+        <include refid="selectAlarmGroupVo"/>
+        where a.id = #{id}
+    </select>
+
+    <select id="selectAlarmGroupByGroupId" parameterType="String" resultMap="AlarmGroupResult">
+        <include refid="selectAlarmGroupVo"/>
+        where a.group_id = #{groupId}
+    </select>
+
+    <select id="selectAlarmGroupByGroupName" parameterType="String" resultMap="AlarmGroupResult">
+        <include refid="selectAlarmGroupVo"/>
+        where a.group_name = #{groupName}
+    </select>
+        
+    <insert id="insertAlarmGroup" parameterType="AlarmGroup" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupId != null and groupId != ''">group_id,</if>
+            <if test="groupName != null">group_name,</if>
+            <if test="node1 != null">node1,</if>
+            <if test="node2 != null">node2,</if>
+            <if test="node3 != null">node3,</if>
+            <if test="node4 != null">node4,</if>
+            <if test="node5 != null">node5,</if>
+            <if test="node6 != null">node6,</if>
+            <if test="node7 != null">node7,</if>
+            <if test="node8 != null">node8,</if>
+            <if test="node9 != null">node9,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupId != null and groupId != ''">#{groupId},</if>
+            <if test="groupName != null">#{groupName},</if>
+            <if test="node1 != null">#{node1},</if>
+            <if test="node2 != null">#{node2},</if>
+            <if test="node3 != null">#{node3},</if>
+            <if test="node4 != null">#{node4},</if>
+            <if test="node5 != null">#{node5},</if>
+            <if test="node6 != null">#{node6},</if>
+            <if test="node7 != null">#{node7},</if>
+            <if test="node8 != null">#{node8},</if>
+            <if test="node9 != null">#{node9},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAlarmGroup" parameterType="AlarmGroup">
+        update alarm_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null and groupId != ''">group_id = #{groupId},</if>
+            <if test="groupName != null">group_name = #{groupName},</if>
+            <if test="node1 != null">node1 = #{node1},</if>
+            <if test="node2 != null">node2 = #{node2},</if>
+            <if test="node3 != null">node3 = #{node3},</if>
+            <if test="node4 != null">node4 = #{node4},</if>
+            <if test="node5 != null">node5 = #{node5},</if>
+            <if test="node6 != null">node6 = #{node6},</if>
+            <if test="node7 != null">node7 = #{node7},</if>
+            <if test="node8 != null">node8 = #{node8},</if>
+            <if test="node9 != null">node9 = #{node9},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAlarmGroupById" parameterType="Long">
+        delete from alarm_group where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmGroupByGroupId" parameterType="String">
+        delete from alarm_group where group_id = #{groupId}
+    </delete>
+
+    <delete id="deleteAlarmGroupByIds" parameterType="String">
+        delete from alarm_group where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

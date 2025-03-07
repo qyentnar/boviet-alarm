@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-bovietApplication<boviet-admin>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.boviet.bovietApplication",
+            "projectName": "boviet-admin",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

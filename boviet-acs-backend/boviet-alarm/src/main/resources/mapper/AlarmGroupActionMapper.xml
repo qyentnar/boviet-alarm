@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boviet.alarm.mapper.AlarmGroupActionMapper">
+    
+    <resultMap type="AlarmGroupAction" id="AlarmGroupActionResult">
+        <result property="id"                  column="id"/>
+        <result property="groupId"                  column="group_id"/>
+        <result property="actionId"                  column="action_id"/>
+        <result property="createBy"                  column="create_by"/>
+        <result property="createTime"                  column="create_time"/>
+        <result property="updateBy"                  column="update_by"/>
+        <result property="updateTime"                  column="update_time"/>
+        <result property="remark"                  column="remark"/>
+    </resultMap>
+
+    <sql id="selectAlarmGroupActionVo">
+        select id, group_id, action_id, create_by, create_time, update_by, update_time, remark from alarm_group_action
+    </sql>
+
+    <select id="selectAlarmGroupActionList" parameterType="AlarmGroupAction" resultMap="AlarmGroupActionResult">
+        <include refid="selectAlarmGroupActionVo"/>
+        <where>  
+            <if test="groupId != null  and groupId != ''"> and group_id = #{groupId}</if>
+            <if test="actionId != null  and actionId != ''"> and action_id = #{actionId}</if>
+        </where>
+    </select>
+    
+    <select id="selectAlarmGroupActionById" parameterType="Long" resultMap="AlarmGroupActionResult">
+        <include refid="selectAlarmGroupActionVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectAlarmGroupActionByGroupId" parameterType="String" resultMap="AlarmGroupActionResult">
+        <include refid="selectAlarmGroupActionVo"/>
+        where group_id = #{groupId}
+    </select>
+        
+    <insert id="insertAlarmGroupAction" parameterType="AlarmGroupAction" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_group_action
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupId != null">group_id,</if>
+            <if test="actionId != null">action_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupId != null">#{groupId},</if>
+            <if test="actionId != null">#{actionId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAlarmGroupAction" parameterType="AlarmGroupAction">
+        update alarm_group_action
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="actionId != null">action_id = #{actionId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAlarmGroupActionById" parameterType="Long">
+        delete from alarm_group_action where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmGroupActionByGroupId" parameterType="String">
+        delete from alarm_group_action where group_id = #{groupId}
+    </delete>
+
+    <delete id="deleteAlarmGroupActionByIds" parameterType="String">
+        delete from alarm_relation where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

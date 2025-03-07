@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boviet.system.mapper.SysLanguageMapper">
+    
+    <resultMap type="SysLanguage" id="SysLanguageResult">
+        <result property="id"               column="id"             />
+        <result property="langKey"          column="lang_key"       />
+        <result property="langType"         column="lang_type"      />
+        <result property="langZh"           column="lang_zh"        />
+        <result property="langEn"           column="lang_en"        />
+        <result property="langVi"           column="lang_vi"        />
+        <result property="menuId"           column="menu_id"        />
+        <result property="createBy"         column="create_by"      />
+        <result property="createTime"       column="create_time"    />
+        <result property="updateBy"         column="update_by"      />
+        <result property="updateTime"       column="update_time"    />
+        <result property="remark"           column="remark"         />
+        <association property="sysMenu" javaType="SysMenu" resultMap="SysMenuResult"/>
+    </resultMap>
+
+    <resultMap type="SysMenu" id="SysMenuResult">
+        <result property="menuId"   column="menu_id"    />
+        <result property="menuName" column="menu_name"  />
+    </resultMap>
+
+
+    <sql id="selectSysLanguageVo">
+        select  m.menu_id, m.menu_name, l.id, l.lang_key, l.lang_type, l.lang_zh, l.lang_en, l.lang_vi, 
+                m.menu_id, m.create_by, m.create_time, m.update_by, m.update_time, m.remark 
+        from  sys_language l 
+        left join sys_menu m on l.menu_id = m.menu_id
+    </sql>
+
+    <select id="selectSysLanguageList" parameterType="SysLanguage" resultMap="SysLanguageResult">
+        <include refid="selectSysLanguageVo"/>
+        <where>  
+            <if test="langKey != null  and langKey != ''"> and lang_key like concat('%', #{langKey}, '%')</if>
+            <if test="langType != null  and langType != ''"> and lang_type = #{langType}</if>
+            <if test="langZh != null  and langZh != ''"> and lang_zh = #{langZh}</if>
+            <if test="langEn != null  and langEn != ''"> and lang_en = #{langEn}</if>
+            <if test="langVi != null  and langVi != ''"> and lang_vi = #{langVi}</if>
+            <if test="menuId != null "> and menu_id = #{menuId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysLanguageById" parameterType="Long" resultMap="SysLanguageResult">
+        <include refid="selectSysLanguageVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPageLanuage" resultMap="SysLanguageResult">
+        select * from sys_language where lang_type = 'Page'
+    </select>
+        
+    <insert id="insertSysLanguage" parameterType="SysLanguage" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_language
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="langKey != null">lang_key,</if>
+            <if test="langType != null">lang_type,</if>
+            <if test="langZh != null">lang_zh,</if>
+            <if test="langEn != null">lang_en,</if>
+            <if test="langVi != null">lang_vi,</if>
+            <if test="menuId != null">menu_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="langKey != null">#{langKey},</if>
+            <if test="langType != null">#{langType},</if>
+            <if test="langZh != null">#{langZh},</if>
+            <if test="langEn != null">#{langEn},</if>
+            <if test="langVi != null">#{langVi},</if>
+            <if test="menuId != null">#{menuId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysLanguage" parameterType="SysLanguage">
+        update sys_language
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="langKey != null">lang_key = #{langKey},</if>
+            <if test="langType != null">lang_type = #{langType},</if>
+            <if test="langZh != null">lang_zh = #{langZh},</if>
+            <if test="langEn != null">lang_en = #{langEn},</if>
+            <if test="langVi != null">lang_vi = #{langVi},</if>
+            <if test="menuId != null">menu_id = #{menuId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysLanguageById" parameterType="Long">
+        delete from sys_language where id = #{id}
+    </delete>
+
+    <delete id="deleteSysLanguageByIds" parameterType="String">
+        delete from sys_language where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

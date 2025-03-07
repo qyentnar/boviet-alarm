@@ -1,0 +1,151 @@
+package com.boviet.alarm.service.impl;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.boviet.common.utils.DateUtils;
+import com.boviet.common.utils.StringUtils;
+import com.boviet.common.utils.uuid.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.boviet.alarm.mapper.AlarmMainGroupMapper;
+import com.boviet.alarm.mapper.AlarmMainMapper;
+import com.boviet.alarm.domain.AlarmMain;
+import com.boviet.alarm.domain.AlarmMainGroup;
+import com.boviet.alarm.service.IAlarmMainService;
+
+import lombok.extern.log4j.Log4j2;
+
+/**
+ * Alarm MainService业务层处理
+ * 
+ * @author boviet
+ * @date 2025-02-25
+ */
+@Log4j2
+@Service
+public class AlarmMainServiceImpl implements IAlarmMainService {
+    @Autowired
+    private AlarmMainMapper alarmMainMapper;
+
+    @Autowired
+    private AlarmMainGroupMapper alarmMainGroupMapper;
+
+    /**
+     * 查询Alarm Main
+     * 
+     * @param id Alarm Main主键
+     * @return Alarm Main
+     */
+    @Override
+    public AlarmMain selectAlarmMainById(Long id) {
+        return alarmMainMapper.selectAlarmMainById(id);
+    }
+
+    /**
+     * 查询Alarm Main
+     * 
+     * @param id Alarm Main主键
+     * @return Alarm Main
+     */
+    @Override
+    public AlarmMain selectAlarmMainByAlarmId(String id) {
+        return alarmMainMapper.selectAlarmMainByAlarmId(id);
+    }
+
+    /**
+     * 查询Alarm Main列表
+     * 
+     * @param alarmMain Alarm Main
+     * @return Alarm Main
+     */
+    @Override
+    public List<AlarmMain> selectAlarmMainList(AlarmMain alarmMain) {
+        return alarmMainMapper.selectAlarmMainList(alarmMain);
+    }
+
+    /**
+     * 新增Alarm Main
+     * 
+     * @param alarmMain Alarm Main
+     * @return 结果
+     */
+    @Override
+    public int insertAlarmMain(AlarmMain alarmMain) {
+        alarmMain.setCreateTime(DateUtils.getNowDate());
+        alarmMain.setAlarmId(UUID.randomUUID().toString());
+        int row = alarmMainMapper.insertAlarmMain(alarmMain);
+        if(row > 0){
+            this.updateAlarmMainGroup(alarmMain);
+        }
+        return row;
+    }
+
+    /**
+     * 修改Alarm Main
+     * 
+     * @param alarmMain Alarm Main
+     * @return 结果
+     */
+    @Override
+    public int updateAlarmMain(AlarmMain alarmMain) {
+        alarmMain.setUpdateTime(DateUtils.getNowDate());
+        int row = alarmMainMapper.updateAlarmMain(alarmMain);
+        if(row > 0){
+            this.updateAlarmMainGroup(alarmMain);
+        }
+        return row;
+    }
+
+    @Override
+    public int updateAlarmMainRules(AlarmMain alarmMain) {
+        alarmMain.setUpdateTime(DateUtils.getNowDate());
+        return alarmMainMapper.updateAlarmMain(alarmMain);
+    }
+
+    private int updateAlarmMainGroup(AlarmMain alarmMain){
+        int row = 0;
+        alarmMainGroupMapper.deleteAlarmMainGroupByAlarmId(alarmMain.getAlarmId());
+        List<String> groupIds = alarmMain.getGroupIds();
+        if(StringUtils.isNull(groupIds) || groupIds.size() == 0){
+            return row;
+        }
+        groupIds = groupIds.stream()
+                            .filter(groupId -> groupId != null && !groupId.trim().isEmpty())
+                            .collect(Collectors.toList());
+        for (String groupId : groupIds) {
+        AlarmMainGroup alarmMainGroup = new AlarmMainGroup();
+        alarmMainGroup.setAlarmId(alarmMain.getAlarmId());
+        alarmMainGroup.setGroupId(groupId);
+        alarmMainGroup.setCreateBy(alarmMain.getCreateBy());
+        alarmMainGroup.setCreateTime(DateUtils.getNowDate());
+        row += alarmMainGroupMapper.insertAlarmMainGroup(alarmMainGroup);
+        }
+        return row;
+    }
+
+    /**
+     * 批量删除Alarm Main
+     * 
+     * @param ids 需要删除的Alarm Main主键
+     * @return 结果
+     */
+    @Override
+    public int deleteAlarmMainByIds(Long[] ids) {
+        return alarmMainMapper.deleteAlarmMainByIds(ids);
+    }
+
+    /**
+     * 删除Alarm Main信息
+     * 
+     * @param id Alarm Main主键
+     * @return 结果
+     */
+    @Override
+    public int deleteAlarmMainById(Long id) {
+        return alarmMainMapper.deleteAlarmMainById(id);
+    }
+}
