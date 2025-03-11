@@ -2,7 +2,8 @@ package com.boviet.alarm.enums;
 
 public enum ActionTypeEnum {
     EMAIL("EMAIL", "EMAIL"),
-    DINGDING("DINGDING", "钉钉"),
+    DINGDING_GROUP("DINGDING_GROUP", "钉钉"),
+    DINGDING_PERSON("DINGDING_PERSON", "钉钉人员"),
     ITSM("ITSM", "ITSM"),
     WATCHER("WATCHER", "WATCHER");
 

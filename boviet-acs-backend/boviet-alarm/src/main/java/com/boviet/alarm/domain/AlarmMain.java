@@ -54,8 +54,4 @@ public class AlarmMain extends BaseEntity
     /**  */
     @Excel(name = "Rules")
     private String rules;
-
-    private List<AlarmGroup> groups;
-
-    private List<String> groupIds;
 }

@@ -28,6 +28,10 @@ public class AlarmJob extends BaseEntity
     @Excel(name = "Alarm ID")
     private String alarmId;
 
+    /** Group ID */
+    @Excel(name = "Group ID")
+    private String groupId;
+
     /** Message */
     @Excel(name = "Message")
     private String message;
@@ -39,11 +43,6 @@ public class AlarmJob extends BaseEntity
     /** Severity */
     @Excel(name = "Severity")
     private Integer severity;
-
-        /** Request Time */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "Request Time", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date requestTime;
 
     /** Time Out */
     @Excel(name = "Time Out")

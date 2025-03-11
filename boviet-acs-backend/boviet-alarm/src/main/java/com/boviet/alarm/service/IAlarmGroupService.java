@@ -20,6 +20,14 @@ public interface IAlarmGroupService
     public AlarmGroup selectAlarmGroupById(Long id);
 
     /**
+     * 查询Alarm Group
+     * 
+     * @param id Alarm Group主键
+     * @return Alarm Group
+     */
+    public AlarmGroup selectAlarmGroupByGroupId(String groupId);
+
+    /**
      * 查询Alarm Group列表
      * 
      * @param alarmGroup Alarm Group

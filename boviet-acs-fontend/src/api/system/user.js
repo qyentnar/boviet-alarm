@@ -18,6 +18,15 @@ export function getUser(userId) {
   })
 }
 
+// 查询用户详细
+export function getUserList(query) {
+  return request({
+    url: '/system/user/getUserList',
+    method: 'get',
+    params: query
+  })
+}
+
 // 新增用户
 export function addUser(data) {
   return request({

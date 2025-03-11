@@ -1,5 +1,7 @@
 package com.boviet.alarm.dto;
 
+import java.util.Date;
+
 import com.alibaba.fastjson2.JSONObject;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -12,4 +14,7 @@ public class AlarmMessageDto {
 
     @ApiModelProperty("Alarm Message")
     private JSONObject alarmMessage;
+
+    @ApiModelProperty("Alarm Create Time")
+    private Date createTime;
 }

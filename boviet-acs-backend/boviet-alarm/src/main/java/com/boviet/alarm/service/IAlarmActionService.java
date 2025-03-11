@@ -61,5 +61,11 @@ public interface IAlarmActionService
      */
     public int deleteAlarmActionById(Long id);
 
-    public Map<String, Object> sendMessage(AlarmAction alarmAction, String message);
+    /**
+     * 
+     * @param alarmAction
+     * @return
+     */
+    public int updateAlarmRegister(AlarmAction alarmAction);
+
 }

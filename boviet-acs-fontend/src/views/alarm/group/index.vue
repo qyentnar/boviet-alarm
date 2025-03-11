@@ -149,13 +149,6 @@
       <el-table-column :label="$t('lbl.group.node7')" align="center" prop="node7" />
       <el-table-column :label="$t('lbl.group.node8')" align="center" prop="node8" />
       <el-table-column :label="$t('lbl.group.node9')" align="center" prop="node9" />
-      <el-table-column :label="$t('lbl.main.actions')" align="center" prop="action">
-        <template slot-scope="scope">
-          <el-tag type="info" size="mini"  effect="dark" v-for="action in scope.row.actions" style="margin-right: 10px;">
-            {{ action.actionName }}
-          </el-tag>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('lbl.group.remark')" align="center" prop="remark" />
       <el-table-column :label="$t('operate')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

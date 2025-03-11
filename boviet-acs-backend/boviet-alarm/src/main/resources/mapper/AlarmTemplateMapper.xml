@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boviet.alarm.mapper.AlarmTemplateMapper">
+    
+    <resultMap type="AlarmTemplate" id="AlarmTemplateResult">
+        <result property="id"                  column="id"/>
+        <result property="templateId"                  column="template_id"/>
+        <result property="templateName"                  column="template_name"/>
+        <result property="templateType"                  column="template_type"/>
+        <result property="template"                  column="template"/>
+        <result property="createBy"                  column="create_by"/>
+        <result property="createTime"                  column="create_time"/>
+        <result property="updateBy"                  column="update_by"/>
+        <result property="updateTime"                  column="update_time"/>
+        <result property="remark"                  column="remark"/>
+    </resultMap>
+
+    <sql id="selectAlarmTemplateVo">
+        select id, template_id, template_name, template_type, template, create_by, create_time, update_by, update_time, remark from alarm_template
+    </sql>
+
+    <select id="selectAlarmTemplateList" parameterType="AlarmTemplate" resultMap="AlarmTemplateResult">
+        <include refid="selectAlarmTemplateVo"/>
+        <where>  
+            <if test="templateId != null  and templateId != ''"> and template_id = #{templateId}</if>
+            <if test="templateName != null  and templateName != ''"> and template_name like concat('%', #{templateName}, '%')</if>
+            <if test="templateType != null  and templateType != ''"> and template_type = #{templateType}</if>
+            <if test="template != null  and template != ''"> and template = #{template}</if>
+        </where>
+    </select>
+    
+    <select id="selectAlarmTemplateById" parameterType="Long" resultMap="AlarmTemplateResult">
+        <include refid="selectAlarmTemplateVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectAlarmTemplateByActionId" parameterType="String" resultMap="AlarmTemplateResult">
+        select a.id, a.template_id, a.template_name, a.template_type, a.template, a.create_by, a.create_time, a.update_by, a.update_time, a.remark 
+        from alarm_template a left join alarm_action_template b on a.template_id = b.template_id
+        where b.action_id = #{actionId}
+    </select>
+
+    <select id="selectAlarmTemplateByTemplateType" parameterType="String" resultMap="AlarmTemplateResult">
+        <include refid="selectAlarmTemplateVo"/>
+        where template_id = #{templateId}
+    </select>
+        
+    <insert id="insertAlarmTemplate" parameterType="AlarmTemplate" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">template_id,</if>
+            <if test="templateName != null">template_name,</if>
+            <if test="templateType != null">template_type,</if>
+            <if test="template != null">template,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">#{templateId},</if>
+            <if test="templateName != null">#{templateName},</if>
+            <if test="templateType != null">#{templateType},</if>
+            <if test="template != null">#{template},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAlarmTemplate" parameterType="AlarmTemplate">
+        update alarm_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="templateId != null">template_id = #{templateId},</if>
+            <if test="templateName != null">template_name = #{templateName},</if>
+            <if test="templateType != null">template_type = #{templateType},</if>
+            <if test="template != null">template = #{template},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAlarmTemplateById" parameterType="Long">
+        delete from alarm_template where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmTemplateByIds" parameterType="String">
+        delete from alarm_template where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

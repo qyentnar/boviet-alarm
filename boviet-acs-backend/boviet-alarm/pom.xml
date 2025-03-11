@@ -27,6 +27,11 @@
             <groupId>com.boviet</groupId>
             <artifactId>boviet-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.boviet</groupId>
+            <artifactId>boviet-system</artifactId>
+        </dependency>
         
         <dependency>
             <groupId>io.swagger</groupId>

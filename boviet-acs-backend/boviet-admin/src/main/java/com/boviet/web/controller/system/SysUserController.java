@@ -112,6 +112,15 @@ public class SysUserController extends BaseController {
     }
 
     /**
+     * 根据用户编号获取详细信息
+     */
+    @PreAuthorize("@ss.hasPermi('system:user:query')")
+    @GetMapping(value = { "/getUserList" })
+    public AjaxResult getUserList(SysUser sysUser) {
+        return AjaxResult.success(userService.selectUserList(sysUser));
+    }
+
+    /**
      * 新增用户
      */
     @PreAuthorize("@ss.hasPermi('system:user:add')")

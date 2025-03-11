@@ -27,9 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <resultMap type="AlarmAction" id="AlarmActionResult">
         <result property="actionId"            column="action_id"/>
-        <result property="actionType"          column="action_type"/>
         <result property="actionName"          column="action_name"/>
-        <result property="config"              column="config"/>
     </resultMap>
 
     <sql id="selectAlarmGroupVo">
@@ -52,9 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             a.update_time,
             a.remark,
             c.action_id,
-            c.action_type,
-            c.action_name,
-            c.config
+            c.action_name
         FROM
             alarm_group a
         LEFT JOIN alarm_group_action b on a.group_id = b.group_id
@@ -62,7 +58,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectAlarmGroupList" parameterType="AlarmGroup" resultMap="AlarmGroupResult">
-        <include refid="selectAlarmGroupVo"/>
+        SELECT a.id, a.group_id, a.group_name, a.node1, a.node2, a.node3, a.node4, a.node5, a.node6, a.node7, a.node8, a.node9, a.create_by, a.create_time, a.update_by, a.update_time, a.remark
+        FROM alarm_group a
         <where>  
             <if test="groupId != null  and groupId != ''"> and a.group_id = #{groupId}</if>
             <if test="groupName != null  and groupName != ''"> and a.group_name like concat('%', #{groupName}, '%')</if>

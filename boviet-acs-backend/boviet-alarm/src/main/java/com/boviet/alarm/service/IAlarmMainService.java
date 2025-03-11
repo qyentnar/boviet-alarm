@@ -46,8 +46,6 @@ public interface IAlarmMainService
      */
     public int updateAlarmMain(AlarmMain alarmMain);
 
-    public int updateAlarmMainRules(AlarmMain alarmMain);
-
     /**
      * 批量删除Alarm Main
      * 

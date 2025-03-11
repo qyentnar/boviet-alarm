@@ -6,25 +6,25 @@ import com.boviet.common.annotation.Excel;
 import com.boviet.common.core.domain.BaseEntity;
 
 /**
- * Alarm Main Group对象 alarm_main_group
+ * Alarm Action Template对象 alarm_action_template
  * 
  * @author boviet
- * @date 2025-02-28
+ * @date 2025-03-10
  */
-public class AlarmMainGroup extends BaseEntity
+public class AlarmActionTemplate extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** ID */
     private Long id;
 
-    /** Alarm ID */
-    @Excel(name = "Alarm ID")
-    private String alarmId;
+    /** Action ID */
+    @Excel(name = "Action ID")
+    private String actionId;
 
-    /** Group ID */
-    @Excel(name = "Group ID")
-    private String groupId;
+    /** Template ID */
+    @Excel(name = "Template ID")
+    private String templateId;
 
     public void setId(Long id) 
     {
@@ -35,31 +35,31 @@ public class AlarmMainGroup extends BaseEntity
     {
         return id;
     }
-    public void setAlarmId(String alarmId) 
+    public void setActionId(String actionId) 
     {
-        this.alarmId = alarmId;
+        this.actionId = actionId;
     }
 
-    public String getAlarmId() 
+    public String getActionId() 
     {
-        return alarmId;
+        return actionId;
     }
-    public void setGroupId(String groupId) 
+    public void setTemplateId(String templateId) 
     {
-        this.groupId = groupId;
+        this.templateId = templateId;
     }
 
-    public String getGroupId() 
+    public String getTemplateId() 
     {
-        return groupId;
+        return templateId;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
-            .append("alarmId", getAlarmId())
-            .append("groupId", getGroupId())
+            .append("actionId", getActionId())
+            .append("templateId", getTemplateId())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

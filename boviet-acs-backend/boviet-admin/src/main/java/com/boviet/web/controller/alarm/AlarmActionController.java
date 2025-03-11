@@ -104,4 +104,12 @@ public class AlarmActionController extends BaseController
     {
         return toAjax(alarmActionService.deleteAlarmActionByIds(ids));
     }
+
+    @PreAuthorize("@ss.hasPermi('alarm:action:edit')")
+    @Log(title = "Alarm Action", businessType = BusinessType.UPDATE)
+    @PostMapping("/updateRegister")
+    public AjaxResult updateRegister(@RequestBody AlarmAction alarmAction){
+        return AjaxResult.success(alarmActionService.updateAlarmRegister(alarmAction));
+    }
+
 }

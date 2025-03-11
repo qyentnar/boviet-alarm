@@ -19,6 +19,7 @@ import com.boviet.common.utils.SecurityUtils;
 import com.boviet.common.utils.StringUtils;
 import com.boviet.common.utils.bean.BeanValidators;
 import com.boviet.common.utils.spring.SpringUtils;
+import com.boviet.common.utils.uuid.UUID;
 import com.boviet.system.domain.SysPost;
 import com.boviet.system.domain.SysUserPost;
 import com.boviet.system.domain.SysUserRole;
@@ -256,6 +257,7 @@ public class SysUserServiceImpl implements ISysUserService
     @Transactional
     public int insertUser(SysUser user)
     {
+        user.setUserUUID(UUID.randomUUID().toString());
         // 新增用户信息
         int rows = userMapper.insertUser(user);
         // 新增用户岗位关联
@@ -274,6 +276,7 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public boolean registerUser(SysUser user)
     {
+        user.setUserUUID(UUID.randomUUID().toString());
         return userMapper.insertUser(user) > 0;
     }
 
@@ -501,6 +504,7 @@ public class SysUserServiceImpl implements ISysUserService
                     BeanValidators.validateWithException(validator, user);
                     user.setPassword(SecurityUtils.encryptPassword(password));
                     user.setCreateBy(operName);
+                    user.setUserUUID(UUID.randomUUID().toString());
                     userMapper.insertUser(user);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 导入成功");

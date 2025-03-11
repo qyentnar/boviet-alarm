@@ -12,6 +12,7 @@ import com.boviet.alarm.dto.AlarmMessageDto;
 import com.boviet.alarm.service.IAlarmManagerService;
 import com.boviet.common.core.controller.BaseController;
 import com.boviet.common.core.domain.AjaxResult;
+import com.boviet.common.utils.DateUtils;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -22,12 +23,13 @@ public class AlarmManagerController extends BaseController {
     @Autowired
     private IAlarmManagerService alarmManagerService;
     
-    @ApiOperation("sendMessage")
-    @PostMapping("/sendMessage")
-    public AjaxResult sendMessage(@RequestHeader String AlarmCode, @RequestBody JSONObject Message) {
+    @ApiOperation("Create Alarm")
+    @PostMapping("/createAlarm")
+    public AjaxResult createAlarm(@RequestHeader String AlarmCode, @RequestBody JSONObject Message) {
         AlarmMessageDto alarmMessage = new AlarmMessageDto();
         alarmMessage.setAlarmId(AlarmCode);
         alarmMessage.setAlarmMessage(Message);
-        return success(alarmManagerService.sendMessage(alarmMessage));
+        alarmMessage.setCreateTime(DateUtils.getNowDate());
+        return success(alarmManagerService.createAlarm(alarmMessage));
     }
 }

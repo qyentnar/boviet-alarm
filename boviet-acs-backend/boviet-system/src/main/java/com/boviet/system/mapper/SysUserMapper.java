@@ -52,6 +52,13 @@ public interface SysUserMapper
     public SysUser selectUserById(Long userId);
 
     /**
+     * 
+     * @param userUUID
+     * @return
+     */
+    public SysUser selectUserByUserUUID(String userUUID);
+
+    /**
      * 新增用户信息
      * 
      * @param user 用户信息

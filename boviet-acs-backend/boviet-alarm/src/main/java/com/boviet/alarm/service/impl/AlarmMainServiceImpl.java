@@ -11,10 +11,8 @@ import com.boviet.common.utils.uuid.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.boviet.alarm.mapper.AlarmMainGroupMapper;
 import com.boviet.alarm.mapper.AlarmMainMapper;
 import com.boviet.alarm.domain.AlarmMain;
-import com.boviet.alarm.domain.AlarmMainGroup;
 import com.boviet.alarm.service.IAlarmMainService;
 
 import lombok.extern.log4j.Log4j2;
@@ -30,9 +28,6 @@ import lombok.extern.log4j.Log4j2;
 public class AlarmMainServiceImpl implements IAlarmMainService {
     @Autowired
     private AlarmMainMapper alarmMainMapper;
-
-    @Autowired
-    private AlarmMainGroupMapper alarmMainGroupMapper;
 
     /**
      * 查询Alarm Main
@@ -77,11 +72,7 @@ public class AlarmMainServiceImpl implements IAlarmMainService {
     public int insertAlarmMain(AlarmMain alarmMain) {
         alarmMain.setCreateTime(DateUtils.getNowDate());
         alarmMain.setAlarmId(UUID.randomUUID().toString());
-        int row = alarmMainMapper.insertAlarmMain(alarmMain);
-        if(row > 0){
-            this.updateAlarmMainGroup(alarmMain);
-        }
-        return row;
+        return alarmMainMapper.insertAlarmMain(alarmMain);
     }
 
     /**
@@ -93,38 +84,7 @@ public class AlarmMainServiceImpl implements IAlarmMainService {
     @Override
     public int updateAlarmMain(AlarmMain alarmMain) {
         alarmMain.setUpdateTime(DateUtils.getNowDate());
-        int row = alarmMainMapper.updateAlarmMain(alarmMain);
-        if(row > 0){
-            this.updateAlarmMainGroup(alarmMain);
-        }
-        return row;
-    }
-
-    @Override
-    public int updateAlarmMainRules(AlarmMain alarmMain) {
-        alarmMain.setUpdateTime(DateUtils.getNowDate());
         return alarmMainMapper.updateAlarmMain(alarmMain);
-    }
-
-    private int updateAlarmMainGroup(AlarmMain alarmMain){
-        int row = 0;
-        alarmMainGroupMapper.deleteAlarmMainGroupByAlarmId(alarmMain.getAlarmId());
-        List<String> groupIds = alarmMain.getGroupIds();
-        if(StringUtils.isNull(groupIds) || groupIds.size() == 0){
-            return row;
-        }
-        groupIds = groupIds.stream()
-                            .filter(groupId -> groupId != null && !groupId.trim().isEmpty())
-                            .collect(Collectors.toList());
-        for (String groupId : groupIds) {
-        AlarmMainGroup alarmMainGroup = new AlarmMainGroup();
-        alarmMainGroup.setAlarmId(alarmMain.getAlarmId());
-        alarmMainGroup.setGroupId(groupId);
-        alarmMainGroup.setCreateBy(alarmMain.getCreateBy());
-        alarmMainGroup.setCreateTime(DateUtils.getNowDate());
-        row += alarmMainGroupMapper.insertAlarmMainGroup(alarmMainGroup);
-        }
-        return row;
     }
 
     /**

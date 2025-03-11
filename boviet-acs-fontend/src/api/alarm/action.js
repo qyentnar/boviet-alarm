@@ -35,6 +35,14 @@ export function updateAction(data) {
   })
 }
 
+export function updateRegister(data) {
+  return request({
+    url: '/alarm/action/updateRegister',
+    method: 'post',
+    data: data
+  })
+}
+
 // 删除Alarm Action
 export function delAction(id) {
   return request({

@@ -1,5 +1,7 @@
 package com.boviet.alarm.domain;
 
+import java.util.List;
+
 import com.boviet.common.annotation.Excel;
 import com.boviet.common.core.domain.BaseEntity;
 
@@ -25,19 +27,13 @@ public class AlarmAction extends BaseEntity
     @Excel(name = "Action ID")
     private String actionId;
 
-    /** Action Type */
-    @Excel(name = "Action Type")
-    private String actionType;
-
     /** Action Name */
     @Excel(name = "Action Name")
     private String actionName;
 
-    /** Config */
-    @Excel(name = "Config")
-    private String config;
+    private List<AlarmTemplate> templates;
+    
+    private String[] templateIds;
 
-    /** Template */
-    @Excel(name = "Template")
-    private String template;
+    private List<AlarmRegister> registers;
 }

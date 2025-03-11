@@ -1,11 +1,13 @@
 package com.boviet.quartz.task;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.boviet.alarm.domain.AlarmAction;
 import com.boviet.alarm.domain.AlarmGroup;
 import com.boviet.alarm.domain.AlarmJob;
@@ -15,10 +17,11 @@ import com.boviet.alarm.enums.JobStatusEnum;
 import com.boviet.alarm.enums.LogStatusEnum;
 import com.boviet.alarm.enums.LogTypeEnum;
 import com.boviet.alarm.enums.JobSeverityEnum;
-import com.boviet.alarm.service.IAlarmActionService;
+import com.boviet.alarm.service.IAlarmGroupService;
 import com.boviet.alarm.service.IAlarmJobService;
 import com.boviet.alarm.service.IAlarmLogService;
 import com.boviet.alarm.service.IAlarmMainService;
+import com.boviet.alarm.service.IAlarmManagerService;
 import com.boviet.common.utils.DateUtils;
 import com.boviet.common.utils.StringUtils;
 
@@ -30,70 +33,75 @@ public class AlarmTask {
 
     @Autowired
     private IAlarmMainService alarmMainService;
-
-    @Autowired
-    private IAlarmActionService actionService;
-
     @Autowired
     private IAlarmLogService alarmLogService;
 
-    public void RunJobWaiting(){
+    @Autowired
+    private IAlarmGroupService alarmGroupService;
+
+    @Autowired
+    private IAlarmManagerService alarmManagerService;
+
+    public void RunJobWaiting() {
         this.RunJob(JobSeverityEnum.CRITICAL.getCode(), JobStatusEnum.WAIT);
     }
 
-    public void RunJobWaiting(Integer severity){
-        if(StringUtils.isNull(severity)){
+    public void RunJobWaiting(Integer severity) {
+        if (StringUtils.isNull(severity)) {
             severity = JobSeverityEnum.CRITICAL.getCode();
         }
         this.RunJob(severity, JobStatusEnum.WAIT);
     }
 
-    public void RunJobFail(Integer severity){
+    public void RunJobFail(Integer severity) {
         this.RunJob(severity, JobStatusEnum.FAIL);
     }
 
-    private void RunJob(Integer severity, JobStatusEnum status){
+    private void RunJob(Integer severity, JobStatusEnum status) {
         AlarmJob alarmJob = new AlarmJob();
         alarmJob.setSeverity(severity);
         alarmJob.setStatus(status.getCode());
         List<AlarmJob> jobs = alarmJobService.selectAlarmJobList(alarmJob);
         for (AlarmJob job : jobs) {
-            AlarmMain alarmMain = alarmMainService.selectAlarmMainByAlarmId(job.getAlarmId());
-            List<AlarmGroup> groups = alarmMain.getGroups();
-            for (AlarmGroup group : groups) {
+            AlarmGroup group = alarmGroupService.selectAlarmGroupByGroupId(job.getGroupId());
+            AlarmMain main = alarmMainService.selectAlarmMainByAlarmId(job.getAlarmId());
+            
+            AlarmLog alarmLog = new AlarmLog();
+            alarmLog.setAlarmId(job.getAlarmId());
+            alarmLog.setLogType(LogTypeEnum.OUTGOING.getCode());
+            alarmLog.setSystemName(StringUtils.isNull(main) ? "" : main.getSystemName());
+            alarmLog.setCreateTime(DateUtils.getNowDate());
+            alarmLog.setRequestTime(DateUtils.getNowDate());
+            Map<String, Object> result = new HashMap<String, Object>();
+            try{
                 List<AlarmAction> actions = group.getActions();
                 for (AlarmAction action : actions) {
-                    AlarmLog alarmLog = new AlarmLog();
-                    alarmLog.setAlarmId(job.getAlarmId());
-                    alarmLog.setLogType(LogTypeEnum.OUTGOING.getCode());
-                    alarmLog.setSystemName(action.getActionType());
-                    alarmLog.setCreateTime(DateUtils.getNowDate());
-                    alarmLog.setRequestTime(DateUtils.getNowDate());
-
-                    alarmJob = new AlarmJob();
-                    alarmJob.setId(job.getId());
-                    Map<String, Object> result = actionService.sendMessage(action, job.getMessage());//更新job状态
-                    if(StringUtils.contains(result.get("code").toString(), "-1")){
-                        alarmJob.setStatus(JobStatusEnum.FAIL.getCode()); //1未发送，0已发送，-1发送失败
-                        alarmLog.setStatus(LogStatusEnum.ERROR.getCode()); //0 Error, 1 Success
-                    }else{
-                        alarmJob.setStatus(JobStatusEnum.SENT.getCode()); //1未发送，0已发送，-1发送失败
-                        alarmLog.setStatus(LogStatusEnum.SUCCESS.getCode()); //0 Error, 1 Success
-                    }
-                    //更新job状态
-                    alarmJobService.updateAlarmJob(alarmJob);
-
-                    //保存日志
-                    alarmLog.setRequestData(result.get("request_data").toString());
-                    alarmLog.setResponseData(result.get("response_data").toString());
-                    alarmLog.setResponseTime(DateUtils.getNowDate());
-                    Long timeout = alarmLog.getResponseTime().getTime() - alarmLog.getCreateTime().getTime();
-                    alarmLog.setTimeOut(timeout);
-                    alarmLog.setRemark(job.getRemark());
-                    alarmLogService.insertAlarmLog(alarmLog);
+                    result = alarmManagerService.sendMessage(action, job.getMessage());
                 }
+                job.setStatus(JobStatusEnum.SENT.getCode());
+                alarmLog.setStatus(LogStatusEnum.SUCCESS.getCode()); // 0 Error, 1 Success
+                alarmLog.setResponseData(JSONObject.toJSONString(result));
+            }
+            catch (Exception e){
+                job.setStatus(JobStatusEnum.FAIL.getCode());
+
+                Map<String, Object> error = new HashMap<String, Object>();
+                error.put("code", -1);
+                error.put("message", e.getMessage());
+                alarmLog.setStatus(LogStatusEnum.ERROR.getCode());
+                alarmLog.setResponseData(JSONObject.toJSONString(error));
+            }
+            finally {
+                alarmJobService.updateAlarmJob(job);
+
+                // 保存日志
+                alarmLog.setRequestData(job.getMessage());
+                alarmLog.setResponseTime(DateUtils.getNowDate());
+                Long timeout = alarmLog.getResponseTime().getTime() - alarmLog.getCreateTime().getTime();
+                alarmLog.setTimeOut(timeout);
+                alarmLog.setRemark(job.getRemark());
+                alarmLogService.insertAlarmLog(alarmLog);
             }
         }
     }
-
 }

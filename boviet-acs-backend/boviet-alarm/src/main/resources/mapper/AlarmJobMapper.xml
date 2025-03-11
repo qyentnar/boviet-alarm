@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="AlarmJob" id="AlarmJobResult">
         <result property="id"                  column="id"/>
         <result property="alarmId"                  column="alarm_id"/>
+        <result property="groupId"                  column="group_id"/>
         <result property="message"                  column="message"/>
         <result property="status"                  column="status"/>
         <result property="severity"                  column="severity"/>
@@ -18,13 +19,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectAlarmJobVo">
-        select id, alarm_id, message, status, severity, create_by, create_time, update_by, update_time, remark from alarm_job
+        select id, alarm_id, group_id, message, status, severity, create_by, create_time, update_by, update_time, remark from alarm_job
     </sql>
 
     <select id="selectAlarmJobList" parameterType="AlarmJob" resultMap="AlarmJobResult">
         <include refid="selectAlarmJobVo"/>
         <where>  
             <if test="alarmId != null  and alarmId != ''"> and alarm_id = #{alarmId}</if>
+            <if test="groupId != null  and groupId != ''"> and group_id = #{groupId}</if>
             <if test="message != null  and message != ''"> and message = #{message}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="severity != null  and severity != ''"> and severity = #{severity}</if>
@@ -40,6 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into alarm_job
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="alarmId != null">alarm_id,</if>
+            <if test="groupId != null">group_id,</if>
             <if test="message != null">message,</if>
             <if test="status != null">status,</if>
             <if test="severity != null">severity,</if>
@@ -51,6 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="alarmId != null">#{alarmId},</if>
+            <if test="groupId != null">#{groupId},</if>
             <if test="message != null">#{message},</if>
             <if test="status != null">#{status},</if>
             <if test="severity != null">#{severity},</if>
@@ -66,6 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update alarm_job
         <trim prefix="SET" suffixOverrides=",">
             <if test="alarmId != null">alarm_id = #{alarmId},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
             <if test="message != null">message = #{message},</if>
             <if test="status != null">status = #{status},</if>
             <if test="severity != null">severity = #{severity},</if>

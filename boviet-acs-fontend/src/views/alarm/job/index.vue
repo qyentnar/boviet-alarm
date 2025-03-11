@@ -75,6 +75,15 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('lbl.job.groupId')" align="center" prop="groupId" width="300">
+        <template slot-scope="scope">
+          <div class="content-wrapper">
+            <el-tooltip :content="scope.row.groupId">
+              <span class="truncate-text">{{ scope.row.groupId }}</span>
+            </el-tooltip>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('lbl.job.message')" align="center" prop="message">
         <template slot-scope="scope">
           <div class="content-wrapper">
@@ -103,6 +112,7 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('lbl.job.createTime')" align="center" prop="createTime" width="160"/>
       <el-table-column :label="$t('operate')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -150,19 +160,31 @@
       </div>
     </el-dialog>
 
-    <el-drawer title="Json Viewer" :visible.sync="drawer">
+    <!-- <el-drawer title="Json Viewer" :visible.sync="drawer">
       <el-link :underline="false" icon="el-icon-document-copy" v-clipboard:copy="JSON.stringify(jsonData)" v-clipboard:success="clipboardSuccess" style="float:right; margin-right: 10px;">复制</el-link>
       <vue-json-pretty :data="jsonData" showLineNumber style="margin: 10px;"/>
-    </el-drawer>
+    </el-drawer> -->
+    <yaml-viewer
+      v-model="jsonData"
+      :visible.sync="drawer"
+      title="View YAML"
+      direction="rtl"
+      width="50%"
+      fileName="config.yaml"
+    />
   </div>
 </template>
 
 <script>
 import { listJob, getJob, delJob, addJob, updateJob } from "@/api/alarm/job";
+import YamlViewer from '@/components/YamlViewer'
 
 export default {
   name: "Job",
   dicts: ['alarm_job_status','alarm_job_severity'],
+  components: {
+    YamlViewer
+  },
   data() {
     return {
       // 遮罩层

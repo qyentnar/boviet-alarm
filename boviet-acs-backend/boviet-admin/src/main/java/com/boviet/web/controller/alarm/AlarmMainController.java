@@ -1,7 +1,6 @@
 package com.boviet.web.controller.alarm;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +18,6 @@ import com.boviet.common.annotation.Log;
 import com.boviet.common.core.controller.BaseController;
 import com.boviet.common.core.domain.AjaxResult;
 import com.boviet.common.enums.BusinessType;
-import com.boviet.alarm.domain.AlarmGroup;
 import com.boviet.alarm.domain.AlarmMain;
 import com.boviet.alarm.service.IAlarmMainService;
 import com.boviet.common.utils.poi.ExcelUtil;
@@ -70,11 +68,7 @@ public class AlarmMainController extends BaseController
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
-        AjaxResult ajax = AjaxResult.success();
-        AlarmMain alarmMain = alarmMainService.selectAlarmMainById(id);
-        ajax.put("groupIds", alarmMain.getGroups().stream().map(AlarmGroup::getGroupId).collect(Collectors.toList()));
-        ajax.put("data", alarmMain);
-        return ajax;
+        return AjaxResult.success(alarmMainService.selectAlarmMainById(id));
     }
 
     /**
@@ -99,15 +93,6 @@ public class AlarmMainController extends BaseController
     {
         alarmMain.setUpdateBy(getUsername());
         return toAjax(alarmMainService.updateAlarmMain(alarmMain));
-    }
-
-    @PreAuthorize("@ss.hasPermi('alarm:main:edit')")
-    @Log(title = "Alarm Main", businessType = BusinessType.UPDATE)
-    @PostMapping("/updateRules")
-    public AjaxResult updateRules(@RequestBody AlarmMain alarmMain)
-    {
-        alarmMain.setUpdateBy(getUsername());
-        return toAjax(alarmMainService.updateAlarmMainRules(alarmMain));
     }
 
     /**

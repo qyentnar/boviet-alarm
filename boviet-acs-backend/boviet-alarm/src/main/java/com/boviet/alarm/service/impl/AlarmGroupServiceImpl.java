@@ -40,6 +40,10 @@ public class AlarmGroupServiceImpl implements IAlarmGroupService
         return alarmGroupMapper.selectAlarmGroupById(id);
     }
 
+    @Override
+    public AlarmGroup selectAlarmGroupByGroupId(String groupId){
+        return alarmGroupMapper.selectAlarmGroupByGroupId(groupId);
+    }
     /**
      * 查询Alarm Group列表
      * 

@@ -135,7 +135,7 @@
         <el-table-column :label="$t('lbl.main.rules')" align="center" prop="rules">
           <template slot-scope="scope">
             <el-tag :type="scope.row.rules != null && scope.row.rules != '' ? 'success' : 'danger'" size="small"  effect="dark">
-              {{ scope.row.rules != null && scope.row.rules != '' ? 'configured' : 'not configured' }}
+              {{ scope.row.rules != null && scope.row.rules != '' ? 'Configured' : 'not Configured' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -218,19 +218,14 @@
           <el-button @click="cancel">{{$t("Cancel")}}</el-button>
         </div>
       </el-dialog>
-
-      <el-dialog :title="title" :visible.sync="openConfig" width="640px" append-to-body>
-        <yaml-editor v-model="yamlContent" :options="{ readOnly: false, lineNumbers: true }"/>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="submitConfigRules">{{$t("Submit")}}</el-button>
-          <el-button @click="() => { openConfig = false}">{{$t("Cancel")}}</el-button>
-        </div>
-      </el-dialog>
+      
+      <!-- 配置规则对话框 -->
+      <yaml-editor v-model="yamlContent" :visible.sync="showEditor" @confirm="onConfirm"  @cancel="onCancel" />
     </div>
   </template>
   
   <script>
-  import { listMain, getMain, delMain, addMain, updateMain, updateRules } from "@/api/alarm/main";
+  import { listMain, getMain, delMain, addMain, updateMain } from "@/api/alarm/main";
   import { listGroup } from "@/api/alarm/group";
   import "codemirror/mode/yaml/yaml.js";
   import 'codemirror/theme/monokai.css';
@@ -263,7 +258,6 @@
         title: "",
         // 是否显示弹出层
         open: false,
-        openConfig: false,
         // 查询参数
         queryParams: {
           pageNum: 1,
@@ -290,7 +284,8 @@
             { required: true, message: this.$t("req.main.groupId"), trigger: "blur" }
           ],
         },
-        yamlContent: "",
+        yamlContent: '',
+        showEditor: false,
       };
     },
     created() {
@@ -418,20 +413,22 @@
         getMain(id).then(response => {
             this.form = response.data;
             this.yamlContent = this.form.rules == null ? "" : this.form.rules;
-            this.title = "Config Rules";
-            this.openConfig = true;
+            this.showEditor = true;
         });
       },
-      submitConfigRules(){
+      onCopySuccess() {
+        this.$message.success(this.$t("copySuccessfully"));
+      },
+      onConfirm(content) {
         this.form.rules = this.yamlContent;
-        updateRules(this.form).then(response => {
+        updateMain(this.form).then(response => {
           this.$modal.msgSuccess(this.$t("editSuccessfully"));
           this.openConfig = false;
           this.getList();
         });
       },
-      onCopySuccess() {
-        this.$message.success(this.$t("copySuccessfully"));
+      onCancel() {
+        console.log('Edit cancelled')
       }
     }
   };

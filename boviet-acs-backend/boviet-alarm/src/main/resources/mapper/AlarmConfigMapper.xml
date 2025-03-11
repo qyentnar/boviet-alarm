@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boviet.alarm.mapper.AlarmConfigMapper">
+    
+    <resultMap type="AlarmConfig" id="AlarmConfigResult">
+        <result property="id"                  column="id"/>
+        <result property="configId"                  column="config_id"/>
+        <result property="configType"                  column="config_type"/>
+        <result property="configName"                  column="config_name"/>
+        <result property="config"                  column="config"/>
+        <result property="createBy"                  column="create_by"/>
+        <result property="createTime"                  column="create_time"/>
+        <result property="updateBy"                  column="update_by"/>
+        <result property="updateTime"                  column="update_time"/>
+        <result property="remark"                  column="remark"/>
+    </resultMap>
+
+    <sql id="selectAlarmConfigVo">
+        select id, config_id, config_type, config_name, config, create_by, create_time, update_by, update_time, remark from alarm_config
+    </sql>
+
+    <select id="selectAlarmConfigList" parameterType="AlarmConfig" resultMap="AlarmConfigResult">
+        <include refid="selectAlarmConfigVo"/>
+        <where>  
+            <if test="configId != null  and configId != ''"> and config_id = #{configId}</if>
+            <if test="configType != null  and configType != ''"> and config_type = #{configType}</if>
+            <if test="configName != null  and configName != ''"> and config_name like concat('%', #{configName}, '%')</if>
+            <if test="config != null  and config != ''"> and config = #{config}</if>
+        </where>
+    </select>
+    
+    <select id="selectAlarmConfigById" parameterType="Long" resultMap="AlarmConfigResult">
+        <include refid="selectAlarmConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectAlarmConfigByConfigType" parameterType="String" resultMap="AlarmConfigResult">
+        <include refid="selectAlarmConfigVo"/>
+        where config_type = #{configType}
+    </select>
+        
+    <insert id="insertAlarmConfig" parameterType="AlarmConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configId != null">config_id,</if>
+            <if test="configType != null">config_type,</if>
+            <if test="configName != null">config_name,</if>
+            <if test="config != null">config,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="configId != null">#{configId},</if>
+            <if test="configType != null">#{configType},</if>
+            <if test="configName != null">#{configName},</if>
+            <if test="config != null">#{config},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAlarmConfig" parameterType="AlarmConfig">
+        update alarm_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configName != null">config_name = #{configName},</if>
+            <if test="config != null">config = #{config},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where config_type = #{configType}
+    </update>
+
+    <delete id="deleteAlarmConfigById" parameterType="Long">
+        delete from alarm_config where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmConfigByIds" parameterType="String">
+        delete from alarm_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

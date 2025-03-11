@@ -1,48 +1,60 @@
 <template>
-  <div class="yaml-editor">
-    <div class="editor-container">
-      <codemirror 
-        ref="cmEditor"
-        v-model="internalValue" 
-        :options="mergedOptions"
-        @input="handleChange"
-        @ready="onEditorReady"
-      />
-    </div>
-    <div v-if="yamlError" class="yaml-error">
-      <el-alert :title="yamlError" type="error" :closable="false" show-icon />
-    </div>
-    <div class="editor-toolbar" v-if="showToolbar">
-      <el-button-group>
-        <el-button 
-          size="mini" 
-          icon="el-icon-magic-stick"
-          @click="formatCode"
-          :title="$t('Format YAML')"
+  <el-dialog
+    :visible.sync="dialogVisible"
+    :title="title"
+    :width="width"
+    :before-close="handleClose"
+    class="yaml-editor-dialog"
+  >
+    <div class="yaml-editor">
+      <div class="editor-container">
+        <codemirror 
+          ref="cmEditor"
+          v-model="internalValue" 
+          :options="mergedOptions"
+          @input="handleChange"
+          @ready="onEditorReady"
         />
-        <el-button 
-          size="mini" 
-          icon="el-icon-document-copy"
-          v-clipboard:copy="internalValue"
-          v-clipboard:success="onCopySuccess"
-          :title="$t('Copy content')"
-        />
-        <el-button 
-          size="mini" 
-          icon="el-icon-upload2"
-          @click="$refs.fileInput.click()"
-          :title="$t('Import file')"
-        />
-      </el-button-group>
-      <input 
-        type="file" 
-        ref="fileInput"
-        accept=".yaml,.yml"
-        style="display:none"
-        @change="handleFileUpload"
-      >
+      </div>
+      <div v-if="yamlError" class="yaml-error">
+        <el-alert :title="yamlError" type="error" :closable="false" show-icon />
+      </div>
+      <div class="editor-toolbar" v-if="showToolbar">
+        <el-button-group>
+          <el-button 
+            size="mini" 
+            icon="el-icon-magic-stick"
+            @click="formatCode"
+            :title="$t('Format YAML')"
+          />
+          <el-button 
+            size="mini" 
+            icon="el-icon-document-copy"
+            v-clipboard:copy="internalValue"
+            v-clipboard:success="onCopySuccess"
+            :title="$t('Copy content')"
+          />
+          <el-button 
+            size="mini" 
+            icon="el-icon-upload2"
+            @click="$refs.fileInput.click()"
+            :title="$t('Import file')"
+          />
+        </el-button-group>
+        <input 
+          type="file" 
+          ref="fileInput"
+          accept=".yaml,.yml"
+          style="display:none"
+          @change="handleFileUpload"
+        >
+      </div>
     </div>
-  </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="handleCancel">{{ $t('Cancel') }}</el-button>
+      <el-button type="primary" @click="handleConfirm">{{ $t('Confirm') }}</el-button>
+    </span>
+  </el-dialog>
 </template>
 
 <script>
@@ -62,6 +74,10 @@ export default {
     codemirror
   },
   props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
     value: {
       type: String,
       default: ''
@@ -73,10 +89,19 @@ export default {
     showToolbar: {
       type: Boolean,
       default: true
+    },
+    title: {
+      type: String,
+      default: 'YAML Editor'
+    },
+    width: {
+      type: String,
+      default: '60%'
     }
   },
   data() {
     return {
+      dialogVisible: false,
       internalValue: '',
       yamlError: null,
       defaultOptions: {
@@ -111,6 +136,15 @@ export default {
     }
   },
   watch: {
+    visible: {
+      handler(val) {
+        this.dialogVisible = val
+      },
+      immediate: true
+    },
+    dialogVisible(val) {
+      this.$emit('update:visible', val)
+    },
     value: {
       handler(newVal) {
         if (newVal !== this.internalValue) {
@@ -168,46 +202,79 @@ export default {
     },
     onEditorReady(cm) {
       this.$emit('ready', cm)
+    },
+    handleClose() {
+      if (this.yamlError) {
+        this.$confirm(
+          this.$t('There are validation errors. Are you sure you want to close?'),
+          this.$t('Warning'),
+          {
+            type: 'warning'
+          }
+        ).then(() => {
+          this.dialogVisible = false
+        }).catch(() => {})
+      } else {
+        this.dialogVisible = false
+      }
+    },
+    handleCancel() {
+      this.dialogVisible = false
+      this.$emit('cancel')
+    },
+    handleConfirm() {
+      if (this.yamlError) {
+        this.$message.error(this.$t('Please fix YAML errors before confirming'))
+        return
+      }
+      this.$emit('confirm', this.internalValue)
+      this.dialogVisible = false
     }
   }
 }
 </script>
 
 <style lang="scss">
-.yaml-editor {
-  position: relative;
-  
-  .editor-container {
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
-    
-    .CodeMirror {
-      height: 400px;
-      font-size: 14px !important; // Force font size
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
-      line-height: 1.5;
-      letter-spacing: 0.5px;
-    }
-    
-    .CodeMirror-code {
-      font-size: inherit;
-    }
+.yaml-editor-dialog {
+  .el-dialog__body {
+    padding: 10px 20px;
   }
   
-  .yaml-error {
-    margin-top: 8px;
-  }
-  
-  .editor-toolbar {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 4;
-    opacity: 0.6;
-    transition: opacity 0.3s;
+  .yaml-editor {
+    position: relative;
     
-    &:hover {
-      opacity: 1;
+    .editor-container {
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      
+      .CodeMirror {
+        height: 400px;
+        font-size: 14px !important;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+        line-height: 1.5;
+        letter-spacing: 0.5px;
+      }
+      
+      .CodeMirror-code {
+        font-size: inherit;
+      }
+    }
+    
+    .yaml-error {
+      margin-top: 8px;
+    }
+    
+    .editor-toolbar {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 4;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+      
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }

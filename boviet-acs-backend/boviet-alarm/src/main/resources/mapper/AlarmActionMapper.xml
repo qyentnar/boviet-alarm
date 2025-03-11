@@ -7,49 +7,74 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="AlarmAction" id="AlarmActionResult">
         <result property="id"                  column="id"/>
         <result property="actionId"                  column="action_id"/>
-        <result property="actionType"                  column="action_type"/>
         <result property="actionName"                  column="action_name"/>
-        <result property="config"                  column="config"/>
-        <result property="template"                  column="template"/>
         <result property="createBy"                  column="create_by"/>
         <result property="createTime"                  column="create_time"/>
         <result property="updateBy"                  column="update_by"/>
         <result property="updateTime"                  column="update_time"/>
         <result property="remark"                  column="remark"/>
+        <collection property="templates"  javaType="java.util.List" resultMap="AlarmTemplateResult"/>
+        <collection property="registers" javaType="java.util.List" resultMap="AlarmRegisterResult"/>
     </resultMap>
 
+    <resultMap type="AlarmTemplate" id="AlarmTemplateResult">
+        <result property="templateId"                  column="template_id"/>
+        <result property="templateName"                  column="template_name"/>
+        <result property="templateType"                  column="template_type"/>
+        <result property="template"                  column="template"/>
+    </resultMap>
+
+    <resultMap type="AlarmRegister" id="AlarmRegisterResult">
+        <result property="registerId"                  column="register_id"/>
+        <result property="registerType"                  column="register_type"/>
+        <result property="register"                  column="register"/>
+    </resultMap>
+
+
     <sql id="selectAlarmActionVo">
-        select id, action_id, action_type, action_name, config, template, create_by, create_time, update_by, update_time, remark from alarm_action
+        SELECT
+            a.id,
+            a.action_id,
+            a.action_name,
+            a.create_by,
+            a.create_time,
+            a.update_by,
+            a.update_time,
+            a.remark,
+            c.template_id,
+            c.template_name,
+            c.template_type,
+            c.template
+        FROM
+            alarm_action a
+        LEFT JOIN alarm_action_template b ON a.action_id = b.action_id
+        LEFT JOIN alarm_template c ON b.template_id = c.template_id
     </sql>
 
     <select id="selectAlarmActionList" parameterType="AlarmAction" resultMap="AlarmActionResult">
-        <include refid="selectAlarmActionVo"/>
+        SELECT a.id, a.action_id, a.action_name, a.create_by, a.create_time, a.update_by, a.update_time, a.remark
+        FROM alarm_action a
         <where>  
-            <if test="actionId != null  and actionId != ''"> and action_id = #{actionId}</if>
-            <if test="actionType != null  and actionType != ''"> and action_type = #{actionType}</if>
-            <if test="actionName != null  and actionName != ''"> and action_name like concat('%', #{actionName}, '%')</if>
-            <if test="config != null  and config != ''"> and config = #{config}</if>
+            <if test="actionId != null  and actionId != ''"> and a.action_id = #{actionId}</if>
+            <if test="actionName != null  and actionName != ''"> and a.action_name like concat('%', #{actionName}, '%')</if>
         </where>
     </select>
     
     <select id="selectAlarmActionById" parameterType="Long" resultMap="AlarmActionResult">
         <include refid="selectAlarmActionVo"/>
-        where id = #{id}
+        where a.id = #{id}
     </select>
         
     <select id="selectAlarmActionByActionId" parameterType="String" resultMap="AlarmActionResult">
         <include refid="selectAlarmActionVo"/>
-        where action_id = #{actionId}
+        where a.action_id = #{actionId}
     </select>
 
     <insert id="insertAlarmAction" parameterType="AlarmAction" useGeneratedKeys="true" keyProperty="id">
         insert into alarm_action
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="actionId != null">action_id,</if>
-            <if test="actionType != null">action_type,</if>
             <if test="actionName != null">action_name,</if>
-            <if test="config != null">config,</if>
-            <if test="template != null">template,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -58,10 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="actionId != null">#{actionId},</if>
-            <if test="actionType != null">#{actionType},</if>
             <if test="actionName != null">#{actionName},</if>
-            <if test="config != null">#{config},</if>
-            <if test="template != null">#{template},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -74,10 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update alarm_action
         <trim prefix="SET" suffixOverrides=",">
             <if test="actionId != null">action_id = #{actionId},</if>
-            <if test="actionType != null">action_type = #{actionType},</if>
             <if test="actionName != null">action_name = #{actionName},</if>
-            <if test="config != null">config = #{config},</if>
-            <if test="template != null">template = #{template},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>

@@ -2,26 +2,15 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item :label="$t('lbl.action.actionName')" prop="actionName">
-        <el-input
-          v-model="queryParams.actionName"
-          :placeholder="$t('plh.action.actionName')"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item :label="$t('lbl.action.actionType')" prop="actionType">
-        <el-input
-          v-model="queryParams.actionType"
-          :placeholder="$t('plh.action.actionType')"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.actionName" :placeholder="$t('plh.action.actionName')" clearable
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-row>
         <el-col align="center">
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t("btnSearch")}}</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t("btnReset")}}</el-button>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{ $t("btnSearch")
+              }}</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{ $t("btnReset") }}</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -29,46 +18,20 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['alarm:action:add']"
-        >{{$t("btnAdd")}}</el-button>
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
+          v-hasPermi="['alarm:action:add']">{{ $t("btnAdd") }}</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['alarm:action:edit']"
-        >{{$t("btnEdit")}}</el-button>
+        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
+          v-hasPermi="['alarm:action:edit']">{{ $t("btnEdit") }}</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['alarm:action:remove']"
-        >{{$t("btnRemove")}}</el-button>
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
+          v-hasPermi="['alarm:action:remove']">{{ $t("btnRemove") }}</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['alarm:action:export']"
-        >{{$t("btnExport")}}</el-button>
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['alarm:action:export']">{{ $t("btnExport") }}</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -77,141 +40,158 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column :label="$t('lbl.action.id')" align="center" prop="id" width="80" />
       <el-table-column :label="$t('lbl.action.actionName')" align="center" prop="actionName" />
-      <el-table-column :label="$t('lbl.action.actionType')" align="center" prop="actionType" />
-      <el-table-column :label="$t('lbl.action.config')" align="center" prop="config">
-        <template slot-scope="scope" v-if="scope.row.config">
-          <div class="content-wrapper">
-            <el-link class="truncate-text" @click="handleOpenDetails(scope.row.config)">
-              {{scope.row.config}}
-            </el-link>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('lbl.action.template')" align="center" prop="template">
-        <template slot-scope="scope" v-if="scope.row.template">
-          <div class="content-wrapper">
-            <el-link class="truncate-text" @click="handleOpenDetails(scope.row.template)">
-              {{scope.row.template}}
-            </el-link>
-          </div>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('lbl.action.remark')" align="center" prop="remark" />
-      <el-table-column :label="$t('operate')" align="center" class-name="small-padding fixed-width" >
+      <el-table-column :label="$t('operate')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-s-operation"
-              @click="handleConfigRules(scope.row)"
-              v-hasPermi="['alarm:action:config']"
-            >{{$t("Config")}}</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['alarm:action:edit']"
-          >{{$t("btnEdit")}}</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['alarm:action:remove']"
-          >{{$t("btnRemove")}}</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleRegister(scope.row)"
+            v-hasPermi="['alarm:action:register']">{{ $t("btnRegister") }}</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
+            v-hasPermi="['alarm:action:edit']">{{ $t("btnEdit") }}</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+            v-hasPermi="['alarm:action:remove']">{{ $t("btnRemove") }}</el-button>
         </template>
       </el-table-column>
     </el-table>
-    
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList" />
 
     <!-- 添加或修改Alarm Action对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="640px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-        <el-form-item :label="$t('lbl.action.actionType')">
-          <el-select v-model="form.actionType" clearable filterable @change="handleSelectionChange">
-            <el-option v-for="item in actionOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('lbl.action.actionName')" prop="actionName">
-          <el-input v-model="form.actionName" :placeholder="$t('plh.action.actionName')" />
-        </el-form-item>
-
-        <!-- Email -->
-        <template v-if="form.actionType == 'EMAIL'">
-          <el-form-item :label="$t('lbl.config.Username')">
-            <el-input v-model="config.Username" :placeholder="$t('plh.config.Username')" />
-          </el-form-item>
-          <el-form-item :label="$t('lbl.config.Password')">
-            <el-input v-model="config.Password" :placeholder="$t('plh.config.Password')" />
-          </el-form-item>
-          <el-form-item :label="$t('lbl.config.smtpHost')">
-            <el-input v-model="config.smtpHost" :placeholder="$t('plh.config.smtpHost')" />
-          </el-form-item>
-          <el-form-item :label="$t('lbl.config.smtpPort')">
-            <el-input v-model="config.smtpPort" :placeholder="$t('plh.config.smtpPort')" />
-          </el-form-item>
-          <el-form-item :label="$t('lbl.config.smtpAuth')">
-            <el-input v-model="config.smtpAuth" :placeholder="$t('plh.config.smtpAuth')" />
-          </el-form-item>
-          <el-form-item :label="$t('lbl.config.smtpSslEnable')">
-            <el-input v-model="config.smtpSslEnable" :placeholder="$t('plh.config.smtpSslEnable')" />
-          </el-form-item>
-          <el-form-item :label="$t('lbl.config.sendTo')">
-            <el-input v-model="config.sendTo" :placeholder="$t('plh.config.sendTo')" />
-          </el-form-item>
-        </template>
-
-        <!-- DingDing -->
-        <template v-else-if="form.actionType == 'DINGDING'">
-          <el-form-item :label="$t('lbl.config.webhook')">
-            <el-input v-model="config.webhook" :placeholder="$t('plh.config.webhook')" />
-          </el-form-item>
-        </template>
-
-        <el-form-item :label="$t('lbl.action.remark')" prop="remark">
-          <el-input v-model="form.remark" type="textarea" :placeholder="$t('plh.action.remark')" />
-        </el-form-item>
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="top">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item :label="$t('lbl.action.actionName')" prop="actionName">
+              <el-input v-model="form.actionName" :placeholder="$t('plh.action.actionName')" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('lbl.action.emailTemplate')" prop="emailTemplate">
+              <el-select v-model="form.emailTemplate" clearable filterable style="width: 100%">
+                <el-option v-for="item in options.filter(x => x.templateType == 'EMAIL')" :key="item.templateId"
+                  :label="item.templateName" :value="item.templateId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('lbl.action.dingtalkGroupTemplate')" prop="dingtalkGroupTemplate">
+              <el-select v-model="form.dingtalkGroupTemplate" clearable filterable style="width: 100%">
+                <el-option v-for="item in options.filter(x => x.templateType == 'DINGTALK_GROUP')"
+                  :key="item.templateId" :label="item.templateName" :value="item.templateId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('lbl.action.dingtalkPersonTemplate')" prop="dingtalkPersonTemplate">
+              <el-select v-model="form.dingtalkPersonTemplate" clearable filterable style="width: 100%">
+                <el-option v-for="item in options.filter(x => x.templateType == 'DINGTALK_PERSON')"
+                  :key="item.templateId" :label="item.templateName" :value="item.templateId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('lbl.action.itsmTemplate')" prop="itsmTemplate">
+              <el-select v-model="form.itsmTemplate" clearable filterable style="width: 100%">
+                <el-option v-for="item in options.filter(x => x.templateType == 'ITSM')" :key="item.templateId"
+                  :label="item.templateName" :value="item.templateId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('lbl.action.watchTemplate')" prop="watchTemplate">
+              <el-select v-model="form.watchTemplate" clearable filterable style="width: 100%">
+                <el-option v-for="item in options.filter(x => x.templateType == 'WATCHER')" :key="item.templateId"
+                  :label="item.templateName" :value="item.templateId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item :label="$t('lbl.action.remark')" prop="remark">
+              <el-input v-model="form.remark" type="textarea" :placeholder="$t('plh.action.remark')" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">{{$t("Submit")}}</el-button>
-        <el-button @click="cancel">{{$t("Cancel")}}</el-button>
+        <el-button type="primary" @click="submitForm">{{ $t("btnSubmit") }}</el-button>
+        <el-button @click="cancel">{{ $t("btnCancel") }}</el-button>
       </div>
     </el-dialog>
 
-    <el-drawer title="Viewer" :visible.sync="drawer">
-      <el-link :underline="false" icon="el-icon-document-copy" v-clipboard:copy="JSON.stringify(jsonData)" v-clipboard:success="clipboardSuccess" style="float:right; margin-right: 10px;">复制</el-link>
-      <vue-json-pretty :data="jsonData" showLineNumber style="margin: 10px;"/>
-    </el-drawer>
+    <!-- 配置规则对话框 -->
+    <yaml-editor v-model="yamlContent" :visible.sync="showEditor" @confirm="submitTemplate" />
 
-    <el-dialog :title="title" :visible.sync="openConfig" width="640px" append-to-body>
-      <yaml-editor v-model="yamlContent" :options="{ readOnly: false, lineNumbers: true }"/>
+    <!-- Transfer dialog -->
+    <el-dialog :title="title" :visible.sync="openRegister" width="900px" append-to-body>
+      <el-tabs v-model="activeTabs">
+        <el-tab-pane label="EMAIL" name="EMAIL">
+          <el-transfer
+            class="register-transfer"
+            filterable
+            v-model="emailSelected"
+            :data="transferData"
+            :titles="['Email', 'Selected']"
+            :props="{key: 'userUUID', label: 'email' }"/>
+        </el-tab-pane>
+        
+        <el-tab-pane label="钉钉组" name="DINGTALK_GROUP">
+          <el-transfer
+            class="register-transfer"
+            filterable
+            v-model="dingtalkGroupSelected" label
+            :data="transferData"
+            :titles="['钉钉组', 'Selected']"
+            :props="{key: 'userUUID', label: 'email' }"/>
+        </el-tab-pane>
+
+        <el-tab-pane label="钉钉人" name="DINGTALK_PERSON">
+          <el-transfer
+            class="register-transfer"
+            filterable
+            v-model="dingtalkPersonSelected"
+            :data="transferData"
+            :titles="['Workcode', 'Selected']"
+            :props="{key: 'userUUID', label: 'userName' }"/>
+        </el-tab-pane>
+
+        <el-tab-pane label="ITSM" name="ITSM">
+          <el-transfer
+            class="register-transfer"
+            filterable
+            v-model="itsmSelected"
+            :data="transferData"
+            :titles="['Workcode', 'Selected']"
+            :props="{key: 'userUUID', label: 'userName' }"/>
+        </el-tab-pane>
+
+        <el-tab-pane label="WATCHER" name="WATCHER">
+          <el-transfer
+            class="register-transfer"
+            filterable
+            v-model="watcherSelected"
+            :data="transferData"
+            :titles="['Watch ID', 'Selected']"
+            :props="{key: 'userUUID', label: 'userName' }"/>
+        </el-tab-pane>
+      </el-tabs>
+
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitTemplate">{{$t("Submit")}}</el-button>
-        <el-button @click="() => { openConfig = false}">{{$t("Cancel")}}</el-button>
+        <el-button @click="openRegister = false">{{ $t("btnCancel") }}</el-button>
+        <el-button type="primary" @click="handleRegisterSubmit">{{ $t("btnSubmit") }}</el-button>
       </div>
     </el-dialog>
-
-    <el-drawer title="Json Viewer" :visible.sync="drawer">
-      <el-link :underline="false" icon="el-icon-document-copy" v-clipboard:copy="JSON.stringify(jsonData)" v-clipboard:success="clipboardSuccess" style="float:right; margin-right: 10px;">复制</el-link>
-      <vue-json-pretty :data="jsonData" showLineNumber style="margin: 10px;"/>
-    </el-drawer>
   </div>
 </template>
 
 <script>
-import { listAction, getAction, delAction, addAction, updateAction } from "@/api/alarm/action";
+import { listAction, getAction, delAction, addAction, updateAction, updateRegister } from "@/api/alarm/action";
+import { getAlarmRegisterList } from "@/api/alarm/register";
+import { getTemplateList } from "@/api/alarm/template";
+import { getUserList } from "@/api/system/user";
 import "codemirror/mode/yaml/yaml.js";
 import 'codemirror/theme/monokai.css';
 import 'codemirror/addon/lint/lint.css';
@@ -227,6 +207,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      activeTabs: 'EMAIL',
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -241,33 +222,36 @@ export default {
       actionList: [],
       // 弹出层标题
       title: "",
-      // 是否显示弹出层
+
+      yamlContent: '',
+
       open: false,
-      drawer: false,
-      openConfig: false,
-      // 编辑或添加的数据
-      jsonData: "",
+
+      openRegister: false,
+      emailSelected: [],
+      dingtalkGroupSelected: [],
+      dingtalkPersonSelected: [],
+      itsmSelected: [],
+      watcherSelected: [],
+      transferData: [],
+      showEditor: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         actionId: null,
         actionName: null,
-        config: null,
       },
+      options: [],
+      // 表单参数
       // 表单参数
       form: {},
-      config: {},
-      actionOptions: [
-        { value: "EMAIL", label: "Email" },
-        { value: "DINGDING", label: "钉钉" },
-        { value: "ITSM", label: "Itsm" },
-        { value: "WATCHER", label: "Watcher" }
-      ],
       // 表单校验
       rules: {
+        actionName: [
+          { required: true, message: this.$t("req.action.actionName"), trigger: "blur" }
+        ]
       },
-      yamlContent: "",
     };
   },
   created() {
@@ -294,7 +278,6 @@ export default {
         id: null,
         actionId: null,
         actionName: null,
-        config: null,
         createBy: null,
         createTime: null,
         updateBy: null,
@@ -316,12 +299,15 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      getTemplateList().then(res => {
+        this.options = res.data;
+      })
       this.open = true;
       this.title = this.$t("titleAddForm");
     },
@@ -331,7 +317,25 @@ export default {
       const id = row.id || this.ids
       getAction(id).then(response => {
         this.form = response.data;
-        this.config = JSON.parse(this.form.config);
+        const templates = response.data.templates;
+        if (templates != null && templates != undefined) {
+          templates.forEach(template => {
+            if(template.templateType === "EMAIL"){
+              this.form.emailTemplate = template.templateId;
+            }else if(template.templateType === "DINGTALK_GROUP"){
+              this.form.dingtalkGroupTemplate = template.templateId;
+            }else if(template.templateType === "DINGTALK_PERSON"){
+              this.form.dingtalkPersonTemplate = template.templateId;
+            }else if(template.templateType === "ITSM"){
+              this.form.itsmTemplate = template.templateId;
+            }else if(template.templateType === "WATCHER"){
+              this.form.watchTemplate = template.templateId;
+            }
+          });
+        }
+        getTemplateList().then(res => {
+          this.options = res.data;
+        })
         this.open = true;
         this.title = this.$t("titleEditForm");
       });
@@ -340,7 +344,13 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.config = JSON.stringify(this.config);
+          this.form.templateIds = [
+            this.form.emailTemplate,
+            this.form.dingtalkGroupTemplate,
+            this.form.dingtalkPersonTemplate,
+            this.form.itsmTemplate,
+            this.form.watchTemplate,
+          ].filter(id => id != null);
           if (this.form.id != null) {
             updateAction(this.form).then(response => {
               this.$modal.msgSuccess(this.$t("editSuccessfully"));
@@ -360,12 +370,12 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm(this.$t("confirmDetele") + ': ' + ids + ' ？').then(function() {
+      this.$modal.confirm(this.$t("confirmDetele") + ': ' + ids + ' ？').then(function () {
         return delAction(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess(this.$t("deletedSuccessfully"));
-      }).catch(() => {});
+      }).catch(() => { });
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -373,38 +383,86 @@ export default {
         ...this.queryParams
       }, `action_${new Date().getTime()}.xlsx`)
     },
-    handleSelectionChange(val){
-      this.config = {};
-    },
-    handleOpenDetails(text){
-      this.drawer = true;
-      try{
-        this.jsonData =  JSON.parse(text);
-      }
-      catch(e){
-        this.jsonData = text;
-      }
-    },
-    handleConfigRules(row){
-      this.reset();
-      const id = row.id || this.ids
-      getAction(id).then(response => {
-          this.form = response.data;
-          this.yamlContent = this.form.rules == null ? "" : this.form.rules;
-          this.title = "Config Rules";
-          this.openConfig = true;
-      });
-    },
-    clipboardSuccess() {
-      this.$modal.msgSuccess("复制成功");
-    },
-    submitTemplate(){
+    submitTemplate() {
       this.form.template = this.yamlContent;
       updateAction(this.form).then(response => {
         this.$modal.msgSuccess(this.$t("editSuccessfully"));
         this.openConfig = false;
         this.getList();
       });
+    },
+    handleRegister(row) {
+      this.reset();
+      const id = row.id || this.ids
+      getAction(id).then(response => {
+        this.form = response.data;
+        const query = { actionId: this.form.actionId }
+        getAlarmRegisterList(query).then(response => {
+          const data = response.data;
+          data.forEach(item => {
+            if(item.registerType === "EMAIL"){
+              this.emailSelected.push(item.register);
+            }else if(item.registerType === "DINGTALK_GROUP"){
+              this.dingtalkGroupSelected.push(item.register);
+            }else if(item.registerType === "DINGTALK_PERSON"){
+              this.dingtalkPersonSelected.push(item.register);
+            }else if(item.registerType === "ITSM"){
+              this.itsmSelected.push(item.register);
+            }else if(item.registerType === "WATCHER"){
+              this.watcherSelected.push(item.register);
+            }
+          })
+          this.openRegister = true;
+          this.title = this.$t("titleRegisterForm");
+          getUserList().then(response => {
+            this.transferData = response.data
+          })
+        })
+      });
+    },
+    handleRegisterSubmit(){
+      this.form.registers = [];
+
+      this.emailSelected.forEach(item => {
+        this.form.registers.push({
+          registerType: 'EMAIL',
+          register: item
+        })
+      })
+
+      this.dingtalkGroupSelected.forEach(item => {
+        this.form.registers.push({
+          registerType: 'DINGTALK_GROUP',
+          register: item
+        })
+      })
+
+      this.dingtalkPersonSelected.forEach(item => {
+        this.form.registers.push({
+          registerType: 'DINGTALK_PERSON',
+          register: item
+        })
+      })
+
+      this.itsmSelected.forEach(item => {
+        this.form.registers.push({
+          registerType: 'ITSM',
+          register: item
+        })
+      })
+
+      this.watcherSelected.forEach(item => {
+        this.form.registers.push({
+          registerType: 'WATCHER',
+          register: item
+        })
+      })
+
+      console.log(this.form)
+      updateRegister(this.form).then(response => {
+        this.$modal.msgSuccess(this.$t("editSuccessfully"));
+        this.openRegister = false;
+      })
     }
   }
 };
@@ -423,5 +481,14 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   display: inline-block;
+}
+
+</style>
+
+<style lang="scss">
+.register-transfer {
+  .el-transfer-panel {
+    width: 330px;
+  }
 }
 </style>

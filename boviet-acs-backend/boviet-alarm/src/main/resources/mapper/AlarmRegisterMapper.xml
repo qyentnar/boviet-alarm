@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boviet.alarm.mapper.AlarmRegisterMapper">
+    
+    <resultMap type="AlarmRegister" id="AlarmRegisterResult">
+        <result property="id"                  column="id"/>
+        <result property="registerId"                  column="register_id"/>
+        <result property="registerType"                  column="register_type"/>
+        <result property="register"                  column="register"/>
+        <result property="actionId"                  column="action_id"/>
+        <result property="createBy"                  column="create_by"/>
+        <result property="createTime"                  column="create_time"/>
+        <result property="updateBy"                  column="update_by"/>
+        <result property="updateTime"                  column="update_time"/>
+        <result property="remark"                  column="remark"/>
+    </resultMap>
+
+    <sql id="selectAlarmRegisterVo">
+        select id, register_id, register_type, register, action_id, create_by, create_time, update_by, update_time, remark from alarm_register
+    </sql>
+
+    <select id="selectAlarmRegisterList" parameterType="AlarmRegister" resultMap="AlarmRegisterResult">
+        <include refid="selectAlarmRegisterVo"/>
+        <where>  
+            <if test="registerId != null  and registerId != ''"> and register_id = #{registerId}</if>
+            <if test="registerType != null  and registerType != ''"> and register_type = #{registerType}</if>
+            <if test="register != null  and register != ''"> and register = #{register}</if>
+            <if test="actionId != null  and actionId != ''"> and action_id = #{actionId}</if>
+        </where>
+    </select>
+    
+    <select id="selectAlarmRegisterById" parameterType="Long" resultMap="AlarmRegisterResult">
+        <include refid="selectAlarmRegisterVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectAlarmRegisterByActionId" parameterType="String" resultMap="AlarmRegisterResult">
+        <include refid="selectAlarmRegisterVo"/>
+        where action_id = #{actionId}
+    </select>
+
+    <select id="selectAlarmRegisterListByActionId" parameterType="String" resultMap="AlarmRegisterResult">
+        <include refid="selectAlarmRegisterVo"/>
+        where action_id = #{actionId}
+    </select>
+        
+    <insert id="insertAlarmRegister" parameterType="AlarmRegister" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_register
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="registerId != null">register_id,</if>
+            <if test="registerType != null">register_type,</if>
+            <if test="register != null">register,</if>
+            <if test="actionId != null">action_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="registerId != null">#{registerId},</if>
+            <if test="registerType != null">#{registerType},</if>
+            <if test="register != null">#{register},</if>
+            <if test="actionId != null">#{actionId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAlarmRegister" parameterType="AlarmRegister">
+        update alarm_register
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="registerId != null">register_id = #{registerId},</if>
+            <if test="registerType != null">register_type = #{registerType},</if>
+            <if test="register != null">register = #{register},</if>
+            <if test="actionId != null">action_id = #{actionId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAlarmRegisterById" parameterType="Long">
+        delete from alarm_register where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmRegisterByActionId" parameterType="String">
+        delete from alarm_register where action_id = #{actionId}
+    </delete>
+
+    <delete id="deleteAlarmRegisterByIds" parameterType="String">
+        delete from alarm_register where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
