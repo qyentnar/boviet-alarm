@@ -122,7 +122,7 @@ public class AlarmManagerServiceImpl implements IAlarmManagerService {
         if (StringUtils.isNull(alarmMain))
             throw new RuntimeException("Failed to send message: Alarm Code not found");
         log.put("system_name", alarmMain.getSystemName());
-        JSONObject alarmMessage = alarmMessageDto.getAlarmMessage();
+        Map<String, Object> alarmMessage = alarmMessageDto.getAlarmMessage();
         if (StringUtils.isNull(alarmMessage))
             throw new RuntimeException("Failed to send message: Alarm Message is empty");
         alarmMessage.put("shift", this.getShift(alarmMessageDto.getCreateTime()));

@@ -172,7 +172,6 @@
         <module>boviet-quartz</module>
         <module>boviet-generator</module>
         <module>boviet-common</module>
-		<module>boviet-attendance</module>
 		<module>boviet-alarm</module>
     </modules>
     <packaging>pom</packaging>

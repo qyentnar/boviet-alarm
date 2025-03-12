@@ -1,8 +1,7 @@
 package com.boviet.alarm.dto;
 
 import java.util.Date;
-
-import com.alibaba.fastjson2.JSONObject;
+import java.util.Map;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +12,7 @@ public class AlarmMessageDto {
     private String alarmId;
 
     @ApiModelProperty("Alarm Message")
-    private JSONObject alarmMessage;
+    private Map<String, Object> alarmMessage;
 
     @ApiModelProperty("Alarm Create Time")
     private Date createTime;

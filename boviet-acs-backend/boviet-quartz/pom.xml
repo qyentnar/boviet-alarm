@@ -37,12 +37,6 @@
 
         <dependency>
             <groupId>com.boviet</groupId>
-            <artifactId>boviet-attendance</artifactId>
-            <version>3.8.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.boviet</groupId>
             <artifactId>boviet-alarm</artifactId>
             <version>3.8.7</version>
         </dependency>

@@ -1,5 +1,7 @@
 package com.boviet.web.controller.alarm;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.boviet.alarm.dto.AlarmMessageDto;
 import com.boviet.alarm.service.IAlarmManagerService;
 import com.boviet.common.core.controller.BaseController;
@@ -25,7 +26,7 @@ public class AlarmManagerController extends BaseController {
     
     @ApiOperation("Create Alarm")
     @PostMapping("/createAlarm")
-    public AjaxResult createAlarm(@RequestHeader String AlarmCode, @RequestBody JSONObject Message) {
+    public AjaxResult createAlarm(@RequestHeader String AlarmCode, @RequestBody Map<String, Object> Message) {
         AlarmMessageDto alarmMessage = new AlarmMessageDto();
         alarmMessage.setAlarmId(AlarmCode);
         alarmMessage.setAlarmMessage(Message);
